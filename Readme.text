@@ -1,0 +1,15 @@
+Server Running 
+npm install -D nodemon
+added script inside package.json file
+and run "npm run server" to keep sever running even if you make change
+
+
+Dependencies:
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
+    "mongoose": "^5.0.15",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "validator": "^9.4.1"
