@@ -50,11 +50,11 @@ router.post('/login', (request, response) => {
     const email = request.body.email;
     const password = request.body.password;
 
-    User.findOne({ email })
+    User.findOne({ email: email })
         .then(user => {
             if(!user) {
                 //errors.email = 'User Not Found';
-                //const errors = 'User Not Found';
+                const errors = 'User Not Found';
                 return response.status(404).json({ email: 'User not Found'});
             }
 
@@ -63,7 +63,7 @@ router.post('/login', (request, response) => {
                     response.json({ msg: 'Success'});
                 } else {
                     //errors.password = 'Incorect Password';
-                    //const errors = 'Incorect Password';
+                    const errors = 'Incorect Password';
                     return response.status(400).json({ password: 'Password Incorect'});
                 }
             });
