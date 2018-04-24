@@ -4,10 +4,11 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/User');
 
+//USERS INDEX ROUTER
 router.get('/teste', (request, response) => response.json({flashMesg: 'Users Works'}));
 
 
-
+//SIGN UP ROUTE
 router.post('/signup', (request, res) => {
     User.findOne({ email: request.body.email }).then(user => {
         if(user) {
@@ -44,7 +45,7 @@ router.post('/signup', (request, res) => {
 });
 
 
-
+//LOGIN ROUTER 
 router.post('/login', (request, response) => {
     const email = request.body.email;
     const password = request.body.password;
@@ -54,7 +55,7 @@ router.post('/login', (request, response) => {
             if(!user) {
                 //errors.email = 'User Not Found';
                 //const errors = 'User Not Found';
-                return response.status(404).json({ email: 'User not found'});
+                return response.status(404).json({ email: 'User not Found'});
             }
 
             bcrypt.compare(password, user.password).then(isMatch => {
