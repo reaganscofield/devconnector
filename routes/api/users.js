@@ -30,13 +30,13 @@ router.post('/signup', (request, res) => {
                 password: request.body.password
             });
 
-            bcrypt.genSalt(20, (err, salt) => {
+            bcrypt.genSalt(10, (err, salt) => {
                 bcrypt.hash(newUser.password, salt, (err, hash) => {
                     if(err) throw err;
                     newUser.password = hash;
                     newUser
                         .save()
-                        .then(user =>  res.json(user))  //console.log(user)
+                        .then(user =>  console.log(user))  //res.json(user)
                         .catch(err => console.log(err));
                 })
             })
