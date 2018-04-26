@@ -7,12 +7,21 @@ const passport = require('passport');
 const keys = require('../../config/keys');
 const User = require('../../models/User');
 
+//bringing validation and loads them
+const signUpValid = require('../../validation/register');
+const signInValid = require('../../validation/login');
+
 //USERS INDEX ROUTER
 router.get('/teste', (request, response) => response.json({flashMesg: 'Users Works'}));
 
 
 //SIGN UP ROUTE
 router.post('/signup', (request, res) => {
+    const { errors, isValid } = signUpValid(request.body);
+    if(!isValid) {
+        return res.status(400).json(errors);
+    }
+
     User.findOne({ email: request.body.email }).then(user => {
         if(user) {
             //errors.email = 'Email already exists';
@@ -52,6 +61,11 @@ router.post('/signup', (request, res) => {
 router.post('/login', (request, response) => {
     const email = request.body.email;
     const password = request.body.password;
+
+    const { errors, isValid } = signInValid(request.body);
+    if(!isValid) {
+        return response.status(400).json(errors);
+    }
 
     User.findOne({ email: email })
         .then(user => {
