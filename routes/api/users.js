@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const keys = require('../../config/keys');
 const User = require('../../models/User');
 
 //USERS INDEX ROUTER
@@ -36,7 +39,7 @@ router.post('/signup', (request, res) => {
                     newUser.password = hash;
                     newUser
                         .save()
-                        .then(user =>  console.log(user))  //res.json(user)
+                        .then(user =>  res.json(user))  // console.log(user)
                         .catch(err => console.log(err));
                 })
             })
@@ -60,7 +63,26 @@ router.post('/login', (request, response) => {
 
             bcrypt.compare(password, user.password).then(isMatch => {
                 if(isMatch) {
-                    response.json({ msg: 'Success'});
+                    //response.json({ msg: 'Success'});
+                    const userDetails = {
+                        id: user.id,
+                        name: user.name,
+                        avatar: user.avatar
+                    };
+                    console.log(userDetails);
+                    //login with jwt
+                    jwt.sign(
+                        userDetails,
+                        keys.secretOrKey,
+                        { expiresIn: 3600 },
+                        (err, token) => {
+                            response.json({
+                                success: true,
+                                token: `Bearer ${token}`
+                            });
+                        }
+                    );
+
                 } else {
                     //errors.password = 'Incorect Password';
                     const errors = 'Incorect Password';
@@ -71,5 +93,20 @@ router.post('/login', (request, response) => {
         });
         
 });
+
+
+//ON users success signin with jwt
+router.get(
+    '/current', passport.authenticate('jwt', { session: false }),
+     (request, response) => {
+        response.json({
+            id: request.user.id,
+            name: request.user.name,
+            email: request.user.email,
+            avatar: request.user.avatar,
+        });
+     }
+);
+
 
 module.exports = router;
