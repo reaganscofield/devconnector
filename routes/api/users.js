@@ -48,7 +48,10 @@ router.post('/signup', (request, res) => {
                     newUser.password = hash;
                     newUser
                         .save()
-                        .then(user =>  res.json(user))  // console.log(user)
+                        .then(user =>  {
+                            res.json(user);
+                            console.log(user);
+                        })
                         .catch(err => console.log(err));
                 })
             })
@@ -77,7 +80,6 @@ router.post('/login', (request, response) => {
 
             bcrypt.compare(password, user.password).then(isMatch => {
                 if(isMatch) {
-                    //response.json({ msg: 'Success'});
                     const userDetails = {
                         id: user.id,
                         name: user.name,
