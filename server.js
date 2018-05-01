@@ -12,8 +12,9 @@ app.use(bodyParser.json());
 
 //connecting to db
 const database = require('./config/keys').mongoURI;
+const databaseLocal = require('./config/keys').localDbConnector;
 mongoose
-    .connect(database)
+    .connect(databaseLocal)
     .then(() => console.log('Successful Connected to Remote Databases'))
     .catch(err => console.log(err));
 
