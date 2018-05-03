@@ -9,15 +9,9 @@ const User = require('../../models/User');
 
 //loads validation
 const validateProfileInput = require('../../validation/profile');
+const validateExperienceInput = require('../../validation/experience');
 
 router.get('/teste', (request, response) => response.json({flashMesg: 'Profile Works'}));
-
-router.get('/', (request, response) => {
-    User.find().then(user => {
-        response.json(user);
-        console.log(user);
-    })
-});
 
 
 //get user
@@ -174,6 +168,38 @@ router.post(
                 }
             })
         }
+    }
+);
+
+
+router.post(
+    '/experience',
+    passport.authenticate('jwt', { session: false }),
+    (request, response) => {
+        const { errors, isValid } = validateExperienceInput(request.body);
+
+        if(!isValid) {
+            console.log(errors);
+            return response.status(400).json(errors);
+        }
+
+        Profile.findOne({ user: request.user.id }).then(profile => {
+            newExperience = {
+                title: request.body.title,
+                company: request.body.company,
+                location: request.body.location,
+                fromDate: request.body.fromDate,
+                to: request.body.to,
+                current: request.body.current,
+                description: request.body.description
+            };
+
+            profile.experience.unshift(newExperience);
+            profile.save().then(profile => {
+                response.json(profile);
+                console.log(profile);
+            })
+        })
     }
 );
 
