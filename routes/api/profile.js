@@ -3,10 +3,22 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 
-router.get('/teste', (request, response) => response.json({flashMesg: 'Profile Works'}));
-
+//loads models
 const Profile = require('../../models/profile');
 const User = require('../../models/User');
+
+//loads validation
+const validateProfileInput = require('../../validation/profile');
+
+router.get('/teste', (request, response) => response.json({flashMesg: 'Profile Works'}));
+
+router.get('/', (request, response) => {
+    User.find().then(user => {
+        response.json(user);
+        console.log(user);
+    })
+});
+
 
 //get user
 router.get(
@@ -17,7 +29,7 @@ router.get(
 
         Profile.findOne({
             user: request.user.id
-        }).populate('user', ['name', 'avatar'])
+        }).populate('users', ['name', 'avatar'])
           .then(profile => {
               if(!profile) {
                   errors.noprofile = 'There is not Profile for this User';
@@ -37,7 +49,7 @@ router.get(
 router.get('/all', (request, response) => {
         const errors =  {};
 
-        Profile.find().populate('user', ['name', 'avatar'])
+        Profile.find().populate('users', ['name', 'avatar'])
         .then(profile => {
             if(!profile) {
                 errors.noprofile = 'There are not Profiles';
@@ -98,7 +110,7 @@ router.get('/user/:user_id', (request, response) => {
 });
 
 
-const validateProfileInput = require('../../validation/profile');
+
 
 // //post profile
 router.post(
@@ -108,24 +120,24 @@ router.post(
         if(!isValid) {
             return response.status(400).json(errors);
         } else {
-            const profileields = {};
+            const profileFields = {};
 
             //profile and user
-            profileields.user = request.user.id;
-            if(request.body.handle) { profileields.handle = request.body.handle }
-            if(request.body.company) { profileields.company = request.body.company }
-            if(request.body.website) { profileields.website = request.body.website }
-            if(request.body.locaton) { profileields.locaton = request.body.locaton }
-            if(request.body.bio) { profileields.bio = request.body.bio }
-            if(request.body.status) { profileields.status = request.body.status }
-            if(request.body.githubrepo) { profileields.githubrepo = request.body.githubrepo }
+            profileFields.user = request.user.id;
+            if(request.body.handle) { profileFields.handle = request.body.handle }
+            if(request.body.company) { profileFields.company = request.body.company }
+            if(request.body.website) { profileFields.website = request.body.website }
+            if(request.body.locaton) { profileFields.locaton = request.body.locaton }
+            if(request.body.bio) { profileFields.bio = request.body.bio }
+            if(request.body.status) { profileFields.status = request.body.status }
+            if(request.body.githubrepo) { profileFields.githubrepo = request.body.githubrepo }
 
             if(typeof(request.body.skills) !== 'undefined') {
-                profileields.skills = request.body.skills.split(',');
+                profileFields.skills = request.body.skills.split(',');
             }
 
             //user social 
-            profileields.social = {};
+            profileFields.social = {};
             if(request.body.youtube) { profileFields.social.youtube = request.body.youtube }
             if(request.body.twitter) { profileFields.social.twitter = request.body.twitter }
             if(request.body.facebook) { profileFields.social.facebook = request.body.facebook }
@@ -137,7 +149,7 @@ router.post(
                     //find and update it
                     Profile.findOneAndUpdate(
                         { user: request.user.id },
-                        { $set: profileields },
+                        { $set: profileFields },
                         { new: true }
                     ).then(profile => {
                         response.json(profile);
@@ -145,7 +157,7 @@ router.post(
                     })
                 } else { //create if not find
                     //check if handle exist
-                    Profile.findOne({ hanlde:  profileields.handle }).then(profile => {
+                    Profile.findOne({ hanlde:  profileFields.handle }).then(profile => {
                         if(profile) {
                             errors.handle = 'The handle aalready exist';
                             response.status(400).json(errors);
@@ -153,7 +165,7 @@ router.post(
                         }
 
                         //save new profile
-                        new Profile(profileields).save().then(profile => {
+                        new Profile(profileFields).save().then(profile => {
                             response.json(profile);
                             console.log(profile);
                         })

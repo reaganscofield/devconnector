@@ -3,6 +3,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
+
+//getting restful api routers from routes dir
+const users = require('./routes/api/users');
+const profile = require('./routes/api/profile');
+const posts = require('./routes/api/posts');
+
 //initialised server
 const app = express();
 
@@ -25,10 +31,6 @@ require('./config/passport')(passport);
 //get index routes
 app.get('/', (request, response) => response.send('Hello Word'));
 
-//getting restful api routers from routes dir
-const users = require('./routes/api/users');
-const profile = require('./routes/api/profile');
-const posts = require('./routes/api/posts');
 
 //routers
 app.use('/api/users', users);

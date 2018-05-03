@@ -5,11 +5,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const keys = require('../../config/keys');
+
+//bring models
 const User = require('../../models/User');
 
 //bringing validation and loads them
 const signUpValid = require('../../validation/register');
 const signInValid = require('../../validation/login');
+
 
 //USERS INDEX ROUTER
 router.get('/teste', (request, response) => response.json({flashMesg: 'Users Works'}));
@@ -123,6 +126,13 @@ router.get(
         });
      }
 );
+
+router.get('/getall', (request, response) => {
+    User.find().then(user => {
+        response.json(user);
+        console.log(user);
+    })
+});
 
 
 module.exports = router;
