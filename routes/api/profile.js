@@ -295,7 +295,7 @@ router.delete(
     (request, response) => {
         Profile.findOneAndRemove({ user: request.user.id }).then(() => {
             User.findOneAndRemove({ _id: request.user.id }).then(() => {
-                respnose.json({ success:  true });
+                response.json({ success:  true });
             })
         })
     }
