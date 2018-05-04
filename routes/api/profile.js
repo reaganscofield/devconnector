@@ -65,7 +65,7 @@ router.get('/handle/:handle', (request, response) => {
     const errors = {};
     
     Profile.findOne({ handle: request.params.handle })
-        .populate('user', ['name', 'avatar' ])
+        .populate('users', ['name', 'avatar' ])
         .then(profile => {
             if(!profile) {
                 errors.noprofile = 'there is not profile for this user';
@@ -87,7 +87,7 @@ router.get('/user/:user_id', (request, response) => {
     const errors = {};
 
     Profile.findOne({ user: request.params.user_id })
-        .populate('user', ['name', 'avatar'])
+        .populate('users', ['name', 'avatar'])
         .then(profile => {
             if(!profile) {
                 errors.noprofile = 'there is not profile for this user';
@@ -237,6 +237,69 @@ router.post(
       });
     }
   );
+
+
+router.delete(
+      '/experience/:exp_id',
+      passport.authenticate('jwt', { session: false }),
+      (request, response) => {
+          Profile.findOne({ user: request.user.id })
+          .then(profile => {
+              const getIndex = profile.experience
+              .map(item => item.id)
+              .indexOf(request.params.exp_id)
+            
+            profile.experience.splice(getIndex, 1);
+
+            profile.save().then(profile => {
+                response.json(profile);
+                console.log(profile);
+            })
+          })
+          .catch(err => {
+              response.status(404).json(err);
+              console.log(err);
+          });
+      }
+);
+
+
+router.delete(
+    '/education/:edu_id',
+    passport.authenticate('jwt', { session: false }),
+    (request, response) => {
+        Profile.findOne({ user: request.user.id })
+        .then(profile => {
+            const getIndex = profile.education
+            .map(item => item.id)
+            .indexOf(request.params.edu_id)
+          
+          profile.education.splice(getIndex, 1);
+
+          profile.save().then(profile => {
+              response.json(profile);
+              console.log(profile);
+          })
+        })
+        .catch(err => {
+            response.status(404).json(err);
+            console.log(err);
+        });
+    }
+);
+
+
+router.delete(
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    (request, response) => {
+        Profile.findOneAndRemove({ user: request.user.id }).then(() => {
+            User.findOneAndRemove({ _id: request.user.id }).then(() => {
+                respnose.json({ success:  true });
+            })
+        })
+    }
+);
 
 
 module.exports = router;
