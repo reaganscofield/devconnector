@@ -39,4 +39,4 @@ app.use('/api/posts', posts);
 
 //running server
 const listenPort = process.env.PORT || 4200;
-app.listen(listenPort,  () => console.log(`Server is Running On ${listenPort}`));
+app.listen(listenPort,  () => console.log(`Server is Running On ${listenPort}`)); 
