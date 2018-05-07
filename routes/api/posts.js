@@ -86,7 +86,7 @@ router.post(
     (request, response) => {
         Profile.findOne({ user: request.user.id }).then(profile => {
             Post.findById(request.params.id).then(post => {
-                if(post.likes.filter(like => like.user.toString() === request.user.id).lenght > 0 ){
+                if(post.likes.filter(like => like.user.toString() === request.user.id).length > 0 ) {
                     return response.status(400).json({ alreadyLiked: 'User Already Like this Post'});
                 }
 
@@ -111,7 +111,7 @@ router.post(
     (request, response) => {
         Profile.findOne({ user: request.user.id }).then(profile => {
             Post.findById(request.params.id).then(post => {
-                if(post.likes.filter(like => like.user.toString() === request.user.id).lenght === 0 ){
+                if(post.likes.filter(like => like.user.toString() === request.user.id).length  === 0 ) {
                     return response.status(400).json({ alreadyLiked: 'you have not Like this Post'});
                 }
 
