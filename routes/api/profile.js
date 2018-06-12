@@ -125,7 +125,7 @@ router.post(
             if(request.body.location) { profileFields.location = request.body.location }
             if(request.body.bio) { profileFields.bio = request.body.bio }
             if(request.body.status) { profileFields.status = request.body.status }
-            if(request.body.githubrepo) { profileFields.githubrepo = request.body.githubrepo }
+            if(request.body.githubrepos) { profileFields.githubrepos = request.body.githubrepos }
 
             if(typeof(request.body.skills) !== 'undefined') {
                 profileFields.skills = request.body.skills.split(',');
