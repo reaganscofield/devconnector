@@ -122,7 +122,7 @@ router.post(
             if(request.body.handle) { profileFields.handle = request.body.handle }
             if(request.body.company) { profileFields.company = request.body.company }
             if(request.body.website) { profileFields.website = request.body.website }
-            if(request.body.locaton) { profileFields.locaton = request.body.locaton }
+            if(request.body.location) { profileFields.location = request.body.location }
             if(request.body.bio) { profileFields.bio = request.body.bio }
             if(request.body.status) { profileFields.status = request.body.status }
             if(request.body.githubrepo) { profileFields.githubrepo = request.body.githubrepo }
